@@ -6,12 +6,9 @@ import os
 
 class ReadConfig:
     def __init__(self, config_name='config'):
-        project_name = 'pyCache'
-
-        temp_dir = os.path.dirname(os.path.abspath('.'))
-        # s1 = temp_dir.index(project_name)
-        # self.root_dir = temp_dir[0:s1] + project_name + '/'
-        self.root_dir = temp_dir + '/' + project_name + '/'
+        # temp_dir = os.path.dirname(os.path.abspath('.'))
+        temp_dir = os.path.abspath('.')
+        self.root_dir = temp_dir + '/'
 
         config_path = os.path.join(self.root_dir, "common/" + config_name + ".ini")
 

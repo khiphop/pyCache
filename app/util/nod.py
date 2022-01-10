@@ -55,7 +55,7 @@ class Nod:
             return False
 
         for no in range(len(sys.argv)):
-            # data restore
+            # Data restore
             if sys.argv[no] == '-dr':
                 f = open("data.txt")
                 line = f.readline()
@@ -93,7 +93,7 @@ class Nod:
         print('node: ' + node)
 
         if inner:
-            print("it's a inner call")
+            print("Trigger a inner call")
 
         if node == str(self.http_ip) + ':' + str(self.http_port) or inner:
             return self.group_cache.gp_set(group, key, val)
