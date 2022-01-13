@@ -59,10 +59,16 @@ def set_cache():
     if request.args is None:
         return resp(4000, 'fail')
 
-    args = json.loads(request.get_data().decode('utf-8'))
-    rs = Nd.set_dispatch(str(args['group']), str(args['key']), str(args['val']))
+    # args = json.loads(request.get_data().decode('utf-8'))
+    # rs = Nd.set_dispatch(str(args['group']), str(args['key']), str(args['val']))
 
-    return resp(0, 'success', rs)
+    group = request.form['group']
+    key = request.form['key']
+    val = request.form['val']
+
+    Nd.set_dispatch(str(group), str(key), str(val))
+
+    return resp(0, 'success', True)
 
 
 @app.route('/inner', methods=['POST'])
@@ -70,8 +76,12 @@ def inner_set():
     if request.args is None:
         return resp(4000, 'fail')
 
-    args = json.loads(request.get_data().decode('utf-8'))
-    rs = Nd.set_dispatch(str(args['group']), str(args['key']), str(args['val']), True)
+    # args = json.loads(request.get_data().decode('utf-8'))
+    group = request.form['group']
+    key = request.form['key']
+    val = request.form['val']
+
+    rs = Nd.set_dispatch(str(group), str(key), str(val), True)
 
     return resp(0, 'success', rs)
 

@@ -29,10 +29,10 @@ class Group:
     def __init__(self, groups):
         self.back_source = {}
         self.back_source_gk = {}
-        self.back_source_cd = 5
+        self.back_source_cd = 60
+        self.mu_map = {}
 
         self.struct = {
-            'mutex': threading.Lock(),
             'map': {}
         }
 
@@ -41,6 +41,7 @@ class Group:
             group_name = g['name']
             self.struct['map'][group_name] = g['operator']
             self.back_source[group_name] = g['back_source']
+            self.mu_map[group_name] = threading.Lock()
 
     def gp_get(self, group, key):
         group = str(group)
@@ -52,13 +53,13 @@ class Group:
         # 触发回源 / trigger back-source
         if not val:
             print('Trigger back-source')
-            self.struct['mutex'].acquire()
+            self.mu_map[group].acquire()
 
             val = self.on_back_source(group, key)
             if val:
                 self.struct['map'][group].set_cache(key, val)
 
-            self.struct['mutex'].release()
+            self.mu_map[group].release()
 
         return val
 
@@ -91,12 +92,12 @@ class Group:
 
         fetch_field = self.back_source[group]['field']
 
-        # async http request
+        # Async http request
         url = self.back_source[group]['url']
         url = url + '?group=' + str(group) + '&key=' + key
         resp = do_http(url)
 
-        # update back-source cool down
+        # Update back-source cool down
         self.back_source_gk[gk_key] = int(time.time()) + self.back_source_cd
 
         if not resp:
@@ -117,19 +118,20 @@ class Group:
         return r
 
     def copy_data(self):
-        self.struct['mutex'].acquire()
 
         ll = []
         dt = {}
         for g in self.struct['map']:
-            if len(self.struct['map'][g].struct['lru'].struct['list']) == 0:
+            self.mu_map[g].acquire()
+
+            if len(self.struct['map'][g].lru.struct['list']) == 0:
                 continue
 
-            ll.append(copy.deepcopy({'g': g, 'd': self.struct['map'][g].struct['lru'].struct['list']}))
-            # dt.append(copy.deepcopy({'g': g, 'd': self.struct['map'][g].struct['lru'].struct['dict']}))
-            dt[g] = copy.deepcopy(self.struct['map'][g].struct['lru'].struct['dict'])
+            ll.append(copy.deepcopy({'g': g, 'd': self.struct['map'][g].lru.struct['list']}))
+            # dt.append(copy.deepcopy({'g': g, 'd': self.struct['map'][g].lru.struct['dict']}))
+            dt[g] = copy.deepcopy(self.struct['map'][g].lru.struct['dict'])
 
-        self.struct['mutex'].release()
+            self.mu_map[g].release()
 
         return ll, dt
 

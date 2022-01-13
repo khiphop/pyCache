@@ -17,26 +17,24 @@ def handle_get_val(byte_val):
 
 class Cac:
     def __init__(self, max_size, c=0, ttl=0, remover=None):
-        self.struct = {
-            'mutex': threading.Lock(),
-            'lru': Lru(max_size, c, ttl, remover),
-        }
+        self.mutex = threading.Lock()
+        self.lru = Lru(max_size, c, ttl, remover)
 
     def get_cache(self, key):
         key = str(key)
-        self.struct['mutex'].acquire()
+        self.mutex.acquire()
 
-        r = self.struct['lru'].lru_get(key)
-        self.struct['mutex'].release()
+        r = self.lru.lru_get(key)
+        self.mutex.release()
 
         return handle_get_val(r)
 
     def set_cache(self, key, val):
-        self.struct['mutex'].acquire()
+        self.mutex.acquire()
 
-        r = self.struct['lru'].lru_set(key, handle_set_val(val))
+        r = self.lru.lru_set(key, handle_set_val(val))
 
-        self.struct['mutex'].release()
+        self.mutex.release()
 
         return r
 

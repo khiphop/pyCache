@@ -32,7 +32,8 @@ def inner_set(node, group, key, val):
             "key": key,
             "val": val
         }
-        r = requests.post(url=url, json=data, timeout=0.2)
+
+        r = requests.post(url=url, data=data, timeout=0.2)
         d = json.loads(r.content)
         val = d['data']
     except BaseException as err:
