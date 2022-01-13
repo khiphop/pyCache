@@ -51,7 +51,7 @@ class Group:
 
         # 触发回源 / trigger back-source
         if not val:
-            print('trigger back-source')
+            print('Trigger back-source')
             self.struct['mutex'].acquire()
 
             val = self.on_back_source(group, key)
@@ -75,19 +75,19 @@ class Group:
         # 复检数据是否存在 / recheck if val exists
         val = self.struct['map'][group].get_cache(key)
         if val:
-            print('recheck if val exists')
+            print('Recheck if val exists')
 
             return val
 
         # 回源cd / back-source cool down
         gk_key = get_back_source_gk(group, key)
         if gk_key in self.back_source_gk and int(self.back_source_gk[gk_key]) > int(time.time()):
-            print('back-source cd')
+            print('Back-source cd')
 
             return ''
 
         # 回源开始 / indeed start back source
-        print('indeed start back source')
+        print('Indeed start back source')
 
         fetch_field = self.back_source[group]['field']
 

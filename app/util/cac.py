@@ -1,6 +1,8 @@
 # coding: utf-8
 import threading
 
+from pyCache.app.util.lru import Lru
+
 
 def handle_set_val(val):
     return bytes(str(val), encoding='utf8')
@@ -14,10 +16,10 @@ def handle_get_val(byte_val):
 
 
 class Cac:
-    def __init__(self, lru):
+    def __init__(self, max_size, c=0, ttl=0, remover=None):
         self.struct = {
             'mutex': threading.Lock(),
-            'lru': lru,
+            'lru': Lru(max_size, c, ttl, remover),
         }
 
     def get_cache(self, key):

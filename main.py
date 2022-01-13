@@ -8,7 +8,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 from app.util.cac import Cac
 from app.util.con_hash import ConHash
-from app.util.lru import Lru
 from app.util.group import Group
 from flask import Flask, request
 from app.util.nod import Nod
@@ -61,7 +60,6 @@ def set_cache():
         return resp(4000, 'fail')
 
     args = json.loads(request.get_data().decode('utf-8'))
-    # print(Gc.struct['map']['user'].struct['lru'].struct['dict'])
     rs = Nd.set_dispatch(str(args['group']), str(args['key']), str(args['val']))
 
     return resp(0, 'success', rs)
@@ -140,7 +138,7 @@ if __name__ == "__main__":
             g = rules[i]
             groups.append({
                 'name': g['name'],
-                'operator': Cac(Lru(g['size'], g['ttl'], 0, on_remove)),
+                'operator': Cac(g['size'], g['ttl'], 0, on_remove),
                 'back_source': g['back_source'],
             })
 

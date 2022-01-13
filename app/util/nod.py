@@ -8,7 +8,7 @@ def inner_get(node, group, key):
     """
     此处阻塞请求, 需要优化 / need perf: it's a block request
     """
-    print('inner_call')
+    print('Inner_get')
     try:
         url = 'http://' + str(node) + '/inner/' + str(group) + '/' + str(key)
         r = requests.get(url=url, timeout=0.2)
@@ -24,7 +24,7 @@ def inner_set(node, group, key, val):
     """
     此处阻塞请求, 需要优化 / need perf: it's a block request
     """
-    print('inner_call')
+    print('Inner_set')
     try:
         url = 'http://' + str(node) + '/inner'
         data = {
@@ -77,10 +77,10 @@ class Nod:
 
     def get_dispatch(self, group, key, inner=False):
         node = self.con_hash.choose_node(key)
-        print('node: ' + node)
+        print('Node: ' + node)
 
         if inner:
-            print("it's a inner call")
+            print("It's a inner call")
 
         if node == str(self.http_ip) + ':' + str(self.http_port) or inner:
             return self.group_cache.gp_get(group, key)
@@ -90,7 +90,7 @@ class Nod:
 
     def set_dispatch(self, group, key, val, inner=False):
         node = self.con_hash.choose_node(key)
-        print('node: ' + node)
+        print('Node: ' + node)
 
         if inner:
             print("Trigger a inner call")

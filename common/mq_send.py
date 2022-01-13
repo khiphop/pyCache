@@ -16,7 +16,7 @@ class MQSend:
 
     def main(self, param_queue='', param_exchange='', param_routing_key='', message=''):
         if not param_queue or not param_exchange or not param_routing_key or not message:
-            print('args error')
+            print('Args error')
 
         MQ = ReadConfig()
         user = str(MQ.get_mq("user"))

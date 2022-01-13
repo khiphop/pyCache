@@ -4,12 +4,12 @@ import time
 
 
 class Lru:
-    def __init__(self, max_size, max_count=0, ttl=0, remover=None):
+    def __init__(self, max_size, c=0, ttl=0, remover=None):
         self.struct = {
             'max_size': max_size,  # 单位: 字节 / byte
-            'max_count': max_count,  # 单位: 字节 / byte
+            'capacity': c,
             'used_size': 0,  # 单位: 字节 /byte
-            'current_count': 0,  # 单位: 字节 /byte
+            'current_count': 0,
             'list': [],  # 存 [key] / storage key
             'dict': {},  # 存 {key: val} / storage {key: val}
             'ttl': int(ttl),
@@ -27,7 +27,7 @@ class Lru:
             # dict键值对的内存释放不了
             break
 
-        while 0 < self.struct['max_count'] < self.struct['current_count']:
+        while 0 < self.struct['capacity'] < len(self.struct['list']):
             self.lru_remove_one()
 
     def lru_remove_one(self):
@@ -76,6 +76,8 @@ class Lru:
         return d['val']
 
     def expire(self, key):
+        print("Trigger expire")
+
         if len(self.struct['list']) == 0:
             return False
 
@@ -86,10 +88,10 @@ class Lru:
 
     def update_memory_usage(self):
         self.struct['used_size'] = int(sys.getsizeof(self.struct['list'])) + int(sys.getsizeof(self.struct['dict']))
-        print('memory_usage: ' + str(self.struct['used_size']))
+        # print('memory_usage: ' + str(self.struct['used_size']))
 
     def update_current_count(self):
-        self.struct['current_count'] = int(sys.getsizeof(self.struct['list'])) + int(sys.getsizeof(self.struct['dict']))
+        self.struct['current_count'] = len(self.struct['list'])
 
     def move_2_head(self, key):
         self.struct['list'].pop(self.struct['list'].index(key))
