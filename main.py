@@ -106,7 +106,7 @@ def remove_node(ip, port):
 def data_persistence():
     Nd.data_persistence()
 
-    return resp(0, 'success')
+    return resp(0, 'success', True)
 
 
 def get_rule():
